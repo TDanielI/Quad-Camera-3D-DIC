@@ -16,39 +16,44 @@ def load_image(fname):
 
     return img
 
-# Manually change this:
-img1_path = "/work/yashsb/rel_pose/demo/matterport_1.png"
-
-img2_path = "/work/yashsb/rel_pose/demo/matterport_2.png"
-
-img1 = load_image(img1_path)
-
-img2 = load_image(img2_path)
-
-matcher = KF.LoFTR(pretrained='indoor')
-
-
 def get_fundamental_matrix_kornia(img1, img2, matcher):
 
-input_dict = {"image0": transforms.functional.rgb_to_grayscale(img1), # LofTR works on grayscale images only
+    input_dict = {"image0": transforms.functional.rgb_to_grayscale(img1), # LofTR works on grayscale images only
 
-"image1": transforms.functional.rgb_to_grayscale(img2)}
-
-
-with torch.inference_mode():
-
-correspondences = matcher(input_dict)
+    "image1": transforms.functional.rgb_to_grayscale(img2)}
 
 
-mkpts0 = correspondences['keypoints0'].cpu().numpy()
+    with torch.inference_mode():
 
-mkpts1 = correspondences['keypoints1'].cpu().numpy()
-
-
-print("Number of matches: ", mkpts0.shape[0])
+        correspondences = matcher(input_dict)
 
 
-Fm, _ = cv2.findFundamentalMat(mkpts0, mkpts1, cv2.USAC_MAGSAC, 0.5, 0.999, 100000)
+    mkpts0 = correspondences['keypoints0'].cpu().numpy()
+
+    mkpts1 = correspondences['keypoints1'].cpu().numpy()
 
 
-return Fm, correspondences
+    print("Number of matches: ", mkpts0.shape[0])
+
+
+    Fm, _ = cv2.findFundamentalMat(mkpts0, mkpts1, cv2.USAC_MAGSAC, 0.5, 0.999, 100000)
+
+
+    return Fm, correspondences
+
+if __name__ == "__main__":
+    # Manually change this:
+    img1_path = "/work/yashsb/rel_pose/demo/matterport_1.png"
+
+    img2_path = "/work/yashsb/rel_pose/demo/matterport_2.png"
+
+    img1 = load_image(img1_path)
+
+    img2 = load_image(img2_path)
+
+    matcher = KF.LoFTR(pretrained='indoor')
+
+    Fm, correspondences = get_fundamental_matrix_kornia(img1, img2, matcher)
+
+    print("Fm", Fm)
+    print("Correspondences", correspondences)
