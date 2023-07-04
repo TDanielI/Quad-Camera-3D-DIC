@@ -1,0 +1,14 @@
+Handpick guide:
+
+1. Load all 4 images into the same folder as manual_points.m
+2. Put the file names into file_1 until file_4 on the code (line 10)
+3. Change the number of corresponding points you want to choose (feature_points) (minimum: 8, default: 10) (line 151)
+4. Press run
+5. Output files:
+	img_file_info       : contains the image file that is associated with each direction (N, E, S, W) which is useful for future processes and the direction for "up" as the videos are rotated.
+	feature_data_export : contains the coordinates of corresponding points (i,j,k)
+										i       : the number of corresponding points * 2
+										j=1     : up or down (+1: up, -1: down)
+										j=2&3   : x and y coordinates of the point
+										k       : [N, E, S, W] = [1, 2, 3, 4]
+										Example : i=n will correspond to i=n+feature_points
